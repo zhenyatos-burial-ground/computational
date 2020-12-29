@@ -19,14 +19,14 @@ end
 plot(tau_values, ni_values);
 hold on;
 
-A(7, 7, 1) = 10;
+A(7, 7, 1) = 8;
 for i = 1:n
     [x, ni] = subdiff(A, b, tau_values(i), false);
     ni_values(i) = ni;
 end
 plot(tau_values, ni_values);
 
-A(7, 7, 1) = 12;
+A(7, 7, 1) = 10;
 for i = 1:n
     [x, ni] = subdiff(A, b, tau_values(i), false);
     ni_values(i) = ni;
@@ -39,12 +39,15 @@ for i = 1:n
     ni_values(i) = ni;
 end
 plot(tau_values, ni_values);
-legend('$\underline{A}_{77} = 6$', ...
-    '$\underline{A}_{77} = 10$', ...
-    '$\underline{A}_{77} = 12$', ...
-    '$\underline{A}_{77} = 12.8$', 'interpreter','latex');
+xlabel('$\tau$', 'interpreter', 'latex');
+ylabel('iterations');
+legend('$\gamma = 6$', ...
+    '$\gamma = 8$', ...
+    '$\gamma = 10$', ...
+    '$\gamma = 12.8$', 'interpreter','latex');
 saveas(gcf,'1.png')
 hold off;
+figure;
 
 t = 6:0.05:14;
 nr_fr = length(t);
@@ -59,7 +62,9 @@ for i = 1 : nr_fr
         ni_values(k) = ni;
     end
     plot(tau_values, ni_values);
-    title(sprintf('%f', t(i)), 'interpreter','latex');
+    xlabel('$\tau$', 'interpreter', 'latex');
+    ylabel('iterations');
+    title(sprintf('$\\gamma = $ %f', t(i)), 'interpreter','latex');
     writeVideo(writerObj, getframe(gcf));
 end
 close(writerObj);
