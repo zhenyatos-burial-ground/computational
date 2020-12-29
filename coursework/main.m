@@ -8,6 +8,7 @@ b = zeros(size(A,1), 2);
 b(:, 1) = b_inf;
 b(:, 2) = b_sup;
 
+% 2D plot
 tau_values = 0.5:0.05:1.0;
 n = length(tau_values);
 ni_values = zeros(1, n);
@@ -49,14 +50,15 @@ saveas(gcf,'1.png')
 hold off;
 figure;
 
-t = 6:0.05:14;
-nr_fr = length(t);
+% Animation
+g = 6:0.05:14;
+nr_fr = length(g);
 frames = moviein(nr_fr); 
 writerObj = VideoWriter('2.avi');
 writerObj.FrameRate = 2;
 open(writerObj);
 for i = 1 : nr_fr
-    A(7, 7, 1) = t(i);
+    A(7, 7, 1) = g(i);
     for k = 1:n
         [x, ni] = subdiff(A, b, tau_values(k), false);
         ni_values(k) = ni;
@@ -64,7 +66,23 @@ for i = 1 : nr_fr
     plot(tau_values, ni_values);
     xlabel('$\tau$', 'interpreter', 'latex');
     ylabel('iterations');
-    title(sprintf('$\\gamma = $ %f', t(i)), 'interpreter','latex');
+    title(sprintf('$\\gamma = $ %f', g(i)), 'interpreter','latex');
     writeVideo(writerObj, getframe(gcf));
 end
 close(writerObj);
+figure;
+
+% 3D plot
+[T, G] = meshgrid(tau_values, g);
+N = zeros(size(T));
+for i = 1:size(T, 1)
+    for j = 1:size(T, 2)
+        A(7, 7, 1) = G(i, j);
+        [x, ni] = subdiff(A, b, T(i, j), false);
+        N(i, j) = ni;
+    end
+end
+surf(T, G, N);
+xlabel('$\tau$', 'interpreter', 'latex');
+ylabel('$\gamma$', 'interpreter', 'latex');
+zlabel('iterations');
